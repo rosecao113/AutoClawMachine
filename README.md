@@ -19,21 +19,21 @@
 └─ YOLOv3            网络参数，需要自行下载
    ├─coco.names      数据集类名
    ├─yolov3.cfg      超参数config
-   └─yolov3.weights	 预训练网络权重
+   └─yolov3.weights  预训练网络权重
 ```
 
-<br/><br/>
+<br/>
 
 跑完整检测+抓取
 
 ```bash
-$ python main.py
+python main.py
 ```
 
 只跑检测
 
 ```bash
-$ python vision.py
+python vision.py
 ```
 
 
