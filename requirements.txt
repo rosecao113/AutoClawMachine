@@ -1,0 +1,12 @@
+comtypes==1.4.2
+numpy==1.26.4
+opencv-python==4.9.0.80
+pillow==10.3.0
+pypiwin32==223
+PyQt5==5.15.10
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.13.0
+pyserial==3.5
+pywin32==306
+pywinauto==0.6.8
+six==1.16.0

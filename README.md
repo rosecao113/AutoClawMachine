@@ -24,6 +24,12 @@
 
 <br/>
 
+安装包
+
+```bash
+pip install -r requirements.txt
+```
+
 跑完整检测+抓取
 
 ```bash
