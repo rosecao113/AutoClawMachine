@@ -4,7 +4,7 @@ import struct
 
 class Arduino:
     def  __init__(self, 
-                  serialPort = "COM13", 
+                  serialPort = "COM14", 
                   baudRate = 9600,
                   timeout = 0.01
                   ):
@@ -32,8 +32,8 @@ class Arduino:
     
     def sendTargets(self, coordinate):
         self.hasTargets = True
-        x = str(coordinate[0])
-        y = str(coordinate[1])
+        x = str(round(1-coordinate[0],2))
+        y = str(round(1-coordinate[1],2))
         self.ser.write(x.encode('utf-8'))
         time.sleep(2)
         self.ser.write(y.encode('utf-8'))

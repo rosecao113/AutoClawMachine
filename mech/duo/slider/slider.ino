@@ -1,5 +1,5 @@
 #include <TimerOne.h>
-const int pinRet = 3;  // 抓手的报告信号，DI
+const int pinRet = 2;  // 抓手的报告信号，DI
 const int pinCom = 8;  // 给抓手的任务信号，DO
 
 // 限位开关，[:,0]左限位，[:,1]右限位
@@ -15,11 +15,19 @@ enum { PUL = 0, DIR = 1 };  // 对应列号
 enum { StepperTop = 0, StepperBot = 1 }; // 上、下滑台，对应pinLim和pinStep的行号
 
 // 全局变量
-const int total_pulse = 11515;  // 总行程脉冲数
-int currentPulseTop;            // 上滑台当前脉冲
-int currentPulseBot;            // 下滑台当前脉冲
+const int total_pulse_top = 7530;  // 上滑台总行程脉冲数
+const int total_pulse_bot = 11243;  // 下滑台总行程脉冲数
+int currentPulseTop, currentPulseBot; // 上、下滑台当前脉冲
+float coord_x = 0, coord_y = 0;    // 目标坐标
+bool clawFinish = false;      // 抓手是否完成，用于复位
+bool hasTarget = false;       // 是否有目标坐标传入
 #define leftDir HIGH
 #define rightDir LOW
+
+void RetClaw() {
+  // 通过外部中断得知抓手状态
+  clawFinish = !clawFinish;
+}
 
 void setup() {
   Serial.begin(9600);  // 初始化串口, 默认波特率为 9600
@@ -27,6 +35,7 @@ void setup() {
 
   // 初始化
   pinMode(pinRet, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(pinRet), RetClaw, CHANGE);
   pinMode(pinCom, OUTPUT);
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 2; j++){
@@ -37,6 +46,22 @@ void setup() {
 
   // 滑台初始化复位
   reset();
+
+  // 计算总行程
+  // int pulse_cnt = 0;
+  // while(digitalRead(pinLim[StepperTop][RIGHT])){
+  //   step(StepperTop, rightDir);
+  //   pulse_cnt++;
+  // }
+  // Serial.print("top pulse number: ");
+  // Serial.println(pulse_cnt);
+  // int pulse_cnt_b = 0;
+  // while(digitalRead(pinLim[StepperBot][RIGHT])){
+  //   step(StepperBot, rightDir);
+  //   pulse_cnt_b++;
+  // }
+  // Serial.print("bot pulse number: ");
+  // Serial.println(pulse_cnt_b);
 }
 
 void step(int stepper, int dir) {
@@ -72,21 +97,24 @@ void sliderMove(int stepper, int targetPulse, int& currentPulse){
   }
 }
 
-void loop() {
-  if (!Serial.available()) return;
-
+void serialEvent() {
   // 读取串口传来的坐标
-  float coord_x = Serial.parseFloat();
+  coord_x = Serial.parseFloat();
   delay(100);
-  float coord_y = Serial.parseFloat();
+  coord_y = Serial.parseFloat();
   delay(100);
+  hasTarget = true;
+}
+
+void loop() {
+  if(!hasTarget) return;
 
   // 滑台移动到指定坐标位置
-  sliderMove(StepperBot , int(total_pulse*coord_y), currentPulseBot);
-  sliderMove(StepperTop , int(total_pulse*coord_x), currentPulseTop);
+  sliderMove(StepperBot , int(total_pulse_bot*coord_x), currentPulseBot);
+  sliderMove(StepperTop , int(total_pulse_top*coord_y), currentPulseTop);
 
-  digitalWrite(pinCom, LOW);  // 通过pinCom通知抓取
-  while(digitalRead(pinRet)); // 等待抓手抓好
+  digitalWrite(pinCom, LOW);  // 通知抓取
+  while(!clawFinish); // 等待抓手抓好
 
   reset();  // 复位
   digitalWrite(pinCom, HIGH);  // 通知抓手张开
