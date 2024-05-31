@@ -1,4 +1,11 @@
+beautifulsoup4==4.12.3
+certifi==2024.2.2
+charset-normalizer==3.3.2
+colorama==0.4.6
 comtypes==1.4.2
+filelock==3.14.0
+gdown==5.2.0
+idna==3.7
 numpy==1.26.4
 opencv-python==4.9.0.80
 pillow==10.3.0
@@ -7,6 +14,11 @@ PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
 PyQt5-sip==12.13.0
 pyserial==3.5
+PySocks==1.7.1
 pywin32==306
 pywinauto==0.6.8
+requests==2.32.3
 six==1.16.0
+soupsieve==2.5
+tqdm==4.66.4
+urllib3==2.2.1

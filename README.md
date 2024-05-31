@@ -4,7 +4,7 @@
 ```
 AutoClawMachine/
 │
-├─ arduino.py        定义串口类用于通信
+├─ arduino.py        定义arduino类用于和uno串口通信
 │  
 ├─ main.py              
 │      
@@ -40,6 +40,12 @@ AutoClawMachine/
 
 ```bash
 pip install -r requirements.txt
+```
+
+下载网络模型和权重
+```bash
+gdown 'https://drive.google.com/uc?export=download&id=1J9mfEsiTetiqpf0Xsr44zXNMn8bqU4Za'
+unzip YOLOv3.zip
 ```
 
 跑完整检测+抓取
